@@ -1,2 +1,2 @@
-# passman
+# PassMan
 Family password manager
