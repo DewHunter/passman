@@ -1,0 +1,21 @@
+{
+  "OwnerID": {
+    "S": "i-123456789124"
+  },
+  "EntryID": {
+    "S": "121bf822-cbca-4542-842d-b9714aedae25"
+  },
+  "ServiceName": {
+    "S": "Capital One"
+  },
+  "Machaca": {
+    "M": {
+      "username": {
+        "S": "jorgeramos"
+      },
+      "password": {
+        "S": "12345fivefive"
+      }
+    }
+  }
+}

@@ -1,28 +1,38 @@
 <template>
-  <AddPassDialog v-on:createPassword="log($event)"/>
+  <div>
+    <ul>
+      <Pass
+        v-for="(pass, idx) in passes"
+        :key="idx"
+        :service="pass.service"
+        :username="pass.username"
+        :password="pass.password"
+      ></Pass>
+    </ul>
+    <AddPassDialog v-on:createPassword="addPass($event)"/>
+  </div>
 </template>
 
 <script>
 import AddPassDialog from "./AddPassDialog";
+import Pass from "./Pass";
 
 export default {
   name: "PassMan",
   components: {
-    AddPassDialog
+    AddPassDialog,
+    Pass
   },
   data: function() {
     return {
       message: "P@ssMan",
       nextIdx: 0,
-      todos: []
+      passes: []
     };
   },
   methods: {
-    addTodo: function(todoText) {
-      this.todos.push({
-        text: todoText,
-        id: this.nextIdx++
-      });
+    addPass: function(passData) {
+      this.passes.push(passData);
     },
     deleteTodos: function() {
       this.todos = [];

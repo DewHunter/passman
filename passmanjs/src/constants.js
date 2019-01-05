@@ -1,3 +1,3 @@
 export default {
-  endpoint: "https://localhost:5000"
+  endpoint: "http://localhost:5000"
 };

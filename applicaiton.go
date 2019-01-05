@@ -3,39 +3,35 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 	"strings"
-	"time"
 
+	"./passmango"
+	"./passmango/config"
 	"github.com/go-chi/chi"
 )
 
 func main() {
-
-	port := os.Getenv("PASSMAN-PORT")
-	if port == "" {
-		port = "5000"
+	configuration, err := config.New()
+	if err != nil {
+		log.Panicln("Configuration error", err)
 	}
 
-	publicDir := os.Getenv("PASSMAN-PUBLIC-DIR")
-	if publicDir == "" {
-		publicDir = "passmanjs/dist"
-	}
+	log.Printf("Starting PassMan 🛡 Server\n\n")
+	router := Routes(configuration)
 
-	log.Printf("Starting PassMan 🛡 Server on port %s\n\n", port)
-
-	r := chi.NewRouter()
-
-	r.Get("/randpassgen", GeneratePassword)
-
-	FileServer(r, "/", http.Dir(publicDir))
-	log.Printf("%s", http.ListenAndServe(":"+port, r))
+	log.Fatalln(http.ListenAndServe(":"+configuration.Constants.PORT, router))
 }
 
-// Placeholder generate random password and pretend to take time
-func GeneratePassword(w http.ResponseWriter, r *http.Request) {
-	time.Sleep(3 * time.Second)
-	w.Write([]byte("{\"pass\": \"random-password\"}"))
+func Routes(configuration *config.Config) *chi.Mux {
+	router := chi.NewRouter()
+
+	router.Route("/api", func(r chi.Router) {
+		r.Mount("/", passmango.Routes(configuration))
+	})
+
+	// Comment out to run API only server
+	FileServer(router, "/", http.Dir(configuration.Constants.PUB_DIR))
+	return router
 }
 
 // Taken from https://github.com/go-chi/chi/blob/master/_examples/fileserver/main.go

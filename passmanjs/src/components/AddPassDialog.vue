@@ -117,7 +117,7 @@ export default {
     },
     createPassword: function() {
       this.$emit("createPassword", {
-        pass: this.password,
+        password: this.password,
         service: this.serviceName,
         username: this.username
       });
