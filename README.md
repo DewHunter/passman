@@ -4,12 +4,18 @@ Family password manager
 
 ## Development
 
+### Dependencies
+
+- https://github.com/ricmoo/aes-js
+- https://vuetifyjs.com
+
 ### To run production version
 
 ```
 cd passmanjs
 npm install
 npm run build
+cd ../
 go run application.go
 ```
 

@@ -10,16 +10,19 @@
       ></Pass>
     </ul>
     <AddPassDialog v-on:createPassword="addPass($event)"/>
+    <SecureKeyDialog/>
   </div>
 </template>
 
 <script>
+import SecureKeyDialog from "./SecureKeyDialog";
 import AddPassDialog from "./AddPassDialog";
 import Pass from "./Pass";
 
 export default {
   name: "PassMan",
   components: {
+    SecureKeyDialog,
     AddPassDialog,
     Pass
   },

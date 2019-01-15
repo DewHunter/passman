@@ -1,19 +1,20 @@
 <template>
   <v-layout align-center justify-center>
     <v-flex xs12 sm8 md4>
-      <v-dialog class="text-xs-center" v-model="dialog" persistent max-width="65%">
+      <v-dialog class="text-xs-center" v-model="dialog" persistent max-width="40%">
         <v-btn large slot="activator" color="green" dark>Add Pass</v-btn>
 
         <v-card class="elevation-12">
           <v-toolbar class="deep-purple darken-4">
             <v-toolbar-title>New Password</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-tooltip left>
+            <!-- TODO: wire up strong password picker helper!
+              <v-tooltip left>
               <v-btn slot="activator" icon large target="_blank" @click="showStringPassPicker">
                 <v-icon meidum color="orange darken-4">dialpad</v-icon>
               </v-btn>
               <span>Need help picking a strong password?</span>
-            </v-tooltip>
+            </v-tooltip>-->
           </v-toolbar>
 
           <v-container fuild grid-list-md>
@@ -48,7 +49,8 @@
                   ></v-text-field>
                 </v-form>
               </v-flex>
-              <v-flex v-if="strongPassPickerShow" xs3>
+              <!-- TODO: wire up strong password picker helper!
+                <v-flex v-if="strongPassPickerShow" xs3>
                 <v-layout column stretch>
                   <v-flex d-flex>
                     <v-textarea
@@ -62,7 +64,7 @@
                     <v-btn block color="success" @click="useGeneratedPass">Use!</v-btn>
                   </v-flex>
                 </v-layout>
-              </v-flex>
+              </v-flex>-->
             </v-layout>
           </v-container>
 

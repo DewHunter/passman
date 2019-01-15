@@ -13,10 +13,6 @@ export default {
     service: String,
     username: String,
     password: String
-  },
-  data: () => {
-    return {};
-  },
-  methods: {}
+  }
 };
 </script>
