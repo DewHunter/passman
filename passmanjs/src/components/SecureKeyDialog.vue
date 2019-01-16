@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     cancel: function() {
-      this.keyMessage = utils.decrypt("fakekeylolz", this.keyMessage);
+      this.keyMessage = utils.decrypt("fakekiylolz", this.keyMessage);
     },
     ok: function() {
       this.keyMessage = utils.encrypt("fakekeylolz", this.keyMessage);

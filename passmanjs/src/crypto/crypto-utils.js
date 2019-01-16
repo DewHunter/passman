@@ -6,38 +6,46 @@ const encrypt = (strKey, str) => {
   if (!(typeof str === "string" || str instanceof String)) {
     throw "Cannot encypt non strings";
   }
-  let salt = saltGen();
-  let key = pbkdf2.pbkdf2Sync(strKey, salt, 1, 128 / 8, "sha512");
-  let iv = ivGen();
+  try {
+    let salt = saltGen();
+    let key = pbkdf2.pbkdf2Sync(strKey, salt, 1, 128 / 8, "sha512");
+    let iv = ivGen();
 
-  let padAndBytes = pad16(iffyUtf16(str));
-  let padLen = padAndBytes.pad;
-  let bytes = padAndBytes.bytes;
+    let padAndBytes = pad16(iffyUtf16(str));
+    let padLen = padAndBytes.pad;
+    let bytes = padAndBytes.bytes;
 
-  let aesCbc = new aesjs.ModeOfOperation.cbc(key, iv);
-  let encryptedBytes = aesCbc.encrypt(bytes);
+    let aesCbc = new aesjs.ModeOfOperation.cbc(key, iv);
+    let encryptedBytes = aesCbc.encrypt(bytes);
 
-  return (
-    padLen.toString(16) +
-    aesjs.utils.hex.fromBytes(iv) +
-    aesjs.utils.hex.fromBytes(encryptedBytes) +
-    salt
-  );
+    return (
+      padLen.toString(16) +
+      aesjs.utils.hex.fromBytes(iv) +
+      aesjs.utils.hex.fromBytes(encryptedBytes) +
+      salt
+    );
+  } catch (e) {
+    throw "encryption error";
+  }
 };
 
 const decrypt = (strKey, strArr8) => {
-  let charArr = strArr8.split("");
-  let pad = parseInt(charArr.splice(0, 1).join(""), 16);
-  let salt = charArr.splice(charArr.length - 16, charArr.length).join("");
-  let arrAndIV = byteArrPlusIV(charArr);
+  try {
+    let charArr = strArr8.split("");
+    let pad = parseInt(charArr.splice(0, 1).join(""), 16);
+    let salt = charArr.splice(charArr.length - 16, charArr.length).join("");
+    let arrAndIV = byteArrPlusIV(charArr);
 
-  let iv = arrAndIV.iv;
-  let arr8 = arrAndIV.arr8;
-  let key = pbkdf2.pbkdf2Sync(strKey, salt, 1, 128 / 8, "sha512");
+    let iv = arrAndIV.iv;
+    let arr8 = arrAndIV.arr8;
+    let key = pbkdf2.pbkdf2Sync(strKey, salt, 1, 128 / 8, "sha512");
 
-  var aesCbc = new aesjs.ModeOfOperation.cbc(key, iv);
-  var decryptedBytes = aesCbc.decrypt(arr8);
-  return fromIffyUtf16(unpad(pad, decryptedBytes));
+    var aesCbc = new aesjs.ModeOfOperation.cbc(key, iv);
+    var decryptedBytes = aesCbc.decrypt(arr8);
+    return fromIffyUtf16(unpad(pad, decryptedBytes));
+  } catch (e) {
+    throw "decryption error";
+  }
 };
 
 // Helpers
