@@ -9,10 +9,16 @@ const encrypt = (strKey, str) => {
   let salt = saltGen();
   let key = pbkdf2.pbkdf2Sync(strKey, salt, 1, 128 / 8, "sha512");
   let iv = ivGen();
-  let textBytes = iffyUtf16(str);
+
+  let padAndBytes = pad16(iffyUtf16(str));
+  let padLen = padAndBytes.pad;
+  let bytes = padAndBytes.bytes;
+
   let aesCbc = new aesjs.ModeOfOperation.cbc(key, iv);
-  let encryptedBytes = aesCbc.encrypt(textBytes);
+  let encryptedBytes = aesCbc.encrypt(bytes);
+
   return (
+    padLen.toString(16) +
     aesjs.utils.hex.fromBytes(iv) +
     aesjs.utils.hex.fromBytes(encryptedBytes) +
     salt
@@ -21,16 +27,17 @@ const encrypt = (strKey, str) => {
 
 const decrypt = (strKey, strArr8) => {
   let charArr = strArr8.split("");
+  let pad = parseInt(charArr.splice(0, 1).join(""), 16);
   let salt = charArr.splice(charArr.length - 16, charArr.length).join("");
   let arrAndIV = byteArrPlusIV(charArr);
+
   let iv = arrAndIV.iv;
   let arr8 = arrAndIV.arr8;
-
   let key = pbkdf2.pbkdf2Sync(strKey, salt, 1, 128 / 8, "sha512");
 
   var aesCbc = new aesjs.ModeOfOperation.cbc(key, iv);
   var decryptedBytes = aesCbc.decrypt(arr8);
-  return fromIffyUtf16(decryptedBytes);
+  return fromIffyUtf16(unpad(pad, decryptedBytes));
 };
 
 // Helpers
@@ -116,8 +123,6 @@ const byteArrPlusIV = charArr => {
     throw "String byte array is not even!";
   }
   var iv = new Uint8Array(16);
-  // var arr8 = new Uint8Array(charArr.length / 2);
-
   for (let i = 0; i < 16; i++) {
     iv[i] = parseInt(charArr.splice(0, 2).join(""), 16);
   }
@@ -126,6 +131,26 @@ const byteArrPlusIV = charArr => {
     iv: iv,
     arr8: arr8
   };
+};
+
+const pad16 = textBytes => {
+  let pad = 16 - (textBytes.length % 16);
+  let paddedTextBytes = new Uint8Array(textBytes.length + pad);
+  for (let i = 0; i < pad; i++) {
+    paddedTextBytes[i] = randByte();
+  }
+  for (let j = pad; j < paddedTextBytes.length; j++) {
+    paddedTextBytes[j] = textBytes[j - pad];
+  }
+  return { pad: pad, bytes: paddedTextBytes };
+};
+
+const unpad = (pad, padded) => {
+  let unpadded = new Uint8Array(padded.length - pad);
+  for (let i = 0; i < unpadded.length; i++) {
+    unpadded[i] = padded[pad + i];
+  }
+  return unpadded;
 };
 
 /**

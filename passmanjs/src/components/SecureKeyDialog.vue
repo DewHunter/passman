@@ -62,7 +62,7 @@ export default {
       this.keyMessage = utils.decrypt("fakekeylolz", this.keyMessage);
     },
     ok: function() {
-      this.keyMessage = utils.encrypt("fakekeylolz", "fakepass");
+      this.keyMessage = utils.encrypt("fakekeylolz", this.keyMessage);
     }
   }
 };
