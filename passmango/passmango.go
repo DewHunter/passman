@@ -1,6 +1,8 @@
 package passmango
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"./config"
@@ -14,7 +16,33 @@ func Routes(config *config.Config) *chi.Mux {
 	router := chi.NewRouter()
 	router.Get("/listTables", ListTables(config))
 	router.Get("/randpassgen", GeneratePassword)
+	router.Post("/putItem", PutItem(config))
 	return router
+}
+
+type item_struct struct {
+	OwnerId string `json:"ownerid"`
+	EntryId string `json:"entryid"`
+}
+
+/**
+ * Test like this:
+ *  curl -X POST localhost:5000/api/putItem -d '{"ownerid":"12345","entryid":"12355"}'
+ */
+func PutItem(configuration *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		jdec := json.NewDecoder(r.Body)
+
+		var item item_struct
+		jdec.Decode(&item)
+
+		log.Printf("Req: %s and %s!\n", item.OwnerId, item.EntryId)
+
+		resp := make(map[string]string)
+		resp["resp"] = "you're good"
+
+		render.JSON(w, r, resp)
+	}
 }
 
 func ListTables(configuration *config.Config) http.HandlerFunc {

@@ -1,20 +1,15 @@
 <template>
   <v-layout align-center justify-center>
     <v-flex xs12 sm8 md4>
-      <v-dialog class="text-xs-center" v-model="dialog" persistent max-width="40%">
-        <v-btn large slot="activator" color="green" dark>Add Pass</v-btn>
-
+      <v-dialog
+        class="text-xs-center"
+        v-model="storeState.showNewPassDialog"
+        persistent
+        max-width="40%"
+      >
         <v-card class="elevation-12">
-          <v-toolbar class="deep-purple darken-4">
+          <v-toolbar class="dialog-header">
             <v-toolbar-title>New Password</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <!-- TODO: wire up strong password picker helper!
-              <v-tooltip left>
-              <v-btn slot="activator" icon large target="_blank" @click="showStringPassPicker">
-                <v-icon meidum color="orange darken-4">dialpad</v-icon>
-              </v-btn>
-              <span>Need help picking a strong password?</span>
-            </v-tooltip>-->
           </v-toolbar>
 
           <v-container fuild grid-list-md>
@@ -49,22 +44,6 @@
                   ></v-text-field>
                 </v-form>
               </v-flex>
-              <!-- TODO: wire up strong password picker helper!
-                <v-flex v-if="strongPassPickerShow" xs3>
-                <v-layout column stretch>
-                  <v-flex d-flex>
-                    <v-textarea
-                      id="genPassword"
-                      outline
-                      label="Generated Password"
-                      v-model="suggestedPass"
-                    ></v-textarea>
-                  </v-flex>
-                  <v-flex d-flex>
-                    <v-btn block color="success" @click="useGeneratedPass">Use!</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-flex>-->
             </v-layout>
           </v-container>
 
@@ -72,8 +51,12 @@
 
           <v-card-actions>
             <v-layout align-center justify-center>
-              <v-btn color="error" @click="cancel">Cancel</v-btn>
-              <v-btn color="info" @click="createPassword">Add</v-btn>
+              <v-btn @click="cancel">
+                <v-icon>cancel</v-icon>
+              </v-btn>
+              <v-btn color="info" @click="createPassword">
+                <v-icon>add</v-icon>
+              </v-btn>
             </v-layout>
           </v-card-actions>
         </v-card>
@@ -89,12 +72,34 @@
 </template>
 
 <script>
-import C from "../constants.js";
+import { store } from "../store/store.js";
+const bgs = [
+  "bg-red",
+  "bg-pink",
+  "bg-purple",
+  "bg-deep-purple",
+  "bg-indigo",
+  "bg-blue",
+  "bg-light-blue",
+  "bg-cyan",
+  "bg-teal",
+  "bg-green",
+  "bg-light-green",
+  "bg-lime",
+  "bg-yellow",
+  "bg-amber",
+  "bg-orange",
+  "bg-deep-orange",
+  "bg-brown",
+  "bg-blue-grey",
+  "bg-grey"
+];
 
 export default {
-  data: () => {
+  name: "AddPassDialog",
+  data() {
     return {
-      dialog: false,
+      storeState: store.state,
       strongPassPickerShow: false,
       serviceName: "",
       username: "",
@@ -105,7 +110,7 @@ export default {
     };
   },
   methods: {
-    clear: function() {
+    clear() {
       this.serviceName = "";
       this.username = "";
       this.password = "";
@@ -113,41 +118,37 @@ export default {
       this.strongPassPickerShow = false;
       this.snackbar = false;
     },
-    cancel: function() {
+    cancel() {
       this.clear();
-      this.dialog = false;
+      store.closeNewPassDialog();
     },
-    createPassword: function() {
-      this.$emit("createPassword", {
-        password: this.password,
-        service: this.serviceName,
-        username: this.username
-      });
-      this.clear();
-      this.dialog = false;
-    },
-    useGeneratedPass: function() {
-      this.snackbar = true;
-      this.showPass = true;
-      this.password = this.suggestedPass;
-      var copyText = document.getElementById("genPassword");
-      copyText.select();
-      document.execCommand("copy");
-    },
-    showStringPassPicker: function() {
-      if (this.strongPassPickerShow) {
-        this.strongPassPickerShow = false;
-        this.suggestedPass = "";
+    createPassword() {
+      if (
+        this.password == "" ||
+        this.serviceName == "" ||
+        this.username == ""
+      ) {
+        alert("No password entry was added!");
+        store.closeNewPassDialog();
       } else {
-        this.strongPassPickerShow = true;
-        this.suggestedPass;
-        (async () => {
-          let resp = await fetch(C.endpoint + "/randpassgen");
-          let respJ = await resp.json();
-          this.suggestedPass = respJ.pass;
-        })();
+        store.addPass({
+          password: this.password,
+          service: this.serviceName,
+          username: this.username,
+          bgColor: this.randColor()
+        });
       }
+      this.clear();
+    },
+    randColor() {
+      return bgs[Math.floor(Math.random() * Math.floor(bgs.length))];
     }
   }
 };
 </script>
+
+<style>
+.dialog-header {
+  background: linear-gradient(120deg, #311b92 0%, #5e35b1 100%);
+}
+</style>

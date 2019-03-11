@@ -1,28 +1,32 @@
 <template>
   <v-app dark>
+    <Toolbar/>
+    <NavDrawer/>
+
     <v-content>
-      <v-container fluid fill-height fill-width>
-        <v-layout align-center justify-center>
-          <v-flex xs12 sm8 md4>
-            <v-card class="elevation-12">
-              <v-card-text>Welcome!
-                <PassMan/>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
+      <PassGrid/>
     </v-content>
+
+    <AddPassDialog/>
+    <Footer/>
   </v-app>
 </template>
 
 <script>
-import PassMan from "./components/PassMan";
+import Toolbar from "./components/Toolbar";
+import NavDrawer from "./components/NavDrawer";
+import PassGrid from "./components/PassGrid";
+import AddPassDialog from "./components/AddPassDialog";
+import Footer from "./components/Footer";
 
 export default {
   name: "App",
   components: {
-    PassMan
+    Toolbar,
+    NavDrawer,
+    PassGrid,
+    AddPassDialog,
+    Footer
   }
 };
 </script>
