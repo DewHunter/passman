@@ -5,7 +5,7 @@
         class="text-xs-center"
         v-model="storeState.showNewPassDialog"
         persistent
-        max-width="40%"
+        max-width="400px"
       >
         <v-card class="elevation-12">
           <v-toolbar class="dialog-header">
@@ -51,10 +51,10 @@
 
           <v-card-actions>
             <v-layout align-center justify-center>
-              <v-btn @click="cancel">
+              <v-btn block @click="cancel">
                 <v-icon>cancel</v-icon>
               </v-btn>
-              <v-btn color="info" @click="createPassword">
+              <v-btn block color="info" @click="createPassword">
                 <v-icon>add</v-icon>
               </v-btn>
             </v-layout>
@@ -72,28 +72,8 @@
 </template>
 
 <script>
-import { store } from "../store/store.js";
-const bgs = [
-  "bg-red",
-  "bg-pink",
-  "bg-purple",
-  "bg-deep-purple",
-  "bg-indigo",
-  "bg-blue",
-  "bg-light-blue",
-  "bg-cyan",
-  "bg-teal",
-  "bg-green",
-  "bg-light-green",
-  "bg-lime",
-  "bg-yellow",
-  "bg-amber",
-  "bg-orange",
-  "bg-deep-orange",
-  "bg-brown",
-  "bg-blue-grey",
-  "bg-grey"
-];
+import { store } from "../../store/store.js";
+import colors from "../../colors/colors.js";
 
 export default {
   name: "AddPassDialog",
@@ -141,7 +121,9 @@ export default {
       this.clear();
     },
     randColor() {
-      return bgs[Math.floor(Math.random() * Math.floor(bgs.length))];
+      return colors.bgs[
+        Math.floor(Math.random() * Math.floor(colors.bgs.length))
+      ];
     }
   }
 };

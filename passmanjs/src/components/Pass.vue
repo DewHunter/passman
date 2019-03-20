@@ -1,36 +1,56 @@
 <template>
-  <v-flex xs3>
-    <v-hover>
-      <v-card
-        slot-scope="{ hover }"
-        :class="`elevation-${hover || showActions ? 24 : 0} ${bgColor}`"
-      >
-        <v-card-title @click="cardClick()">
-          <span class="title font-weight-light">{{ service }}</span>
-        </v-card-title>
+  <v-scale-transition fixed :id="passId">
+    <v-flex xs3>
+      <v-hover>
+        <v-card
+          slot-scope="{ hover }"
+          :class="`elevation-${hover || showActions ? 24 : 0} ${bgColor}`"
+        >
+          <v-card-title @click="cardClick()">
+            <span class="title font-weight-light">{{ service }}</span>
+          </v-card-title>
 
-        <v-card-title>
-          <v-list-tile class="grow">
-            <v-list-tile-avatar>
-              <v-icon>account_circle</v-icon>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ username }}</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-card-title>
-        <v-divider v-if="showActions"></v-divider>
-        <v-card-actions v-if="showActions" class="grow">
-          <v-btn small @click="del()">
-            <v-icon color="red">delete</v-icon>
-          </v-btn>
-          <v-btn small @click="edit()">
-            <v-icon color="blue">edit</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-hover>
-  </v-flex>
+          <v-card-title>
+            <v-list-tile class="grow">
+              <v-list-tile-avatar>
+                <v-icon>account_circle</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ username }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-card-title>
+          <v-divider v-show="showActions"></v-divider>
+          <v-fade-transition hide-on-leave>
+            <v-card-actions v-show="showActions" class="grow">
+              <v-layout align-center justify-center wrap>
+                <div class="pa-2">
+                  <v-btn small @click="del()">
+                    <v-icon color="red">delete</v-icon>
+                  </v-btn>
+                </div>
+                <div class="pa-2">
+                  <v-btn small @click="edit()">
+                    <v-icon color="blue">edit</v-icon>
+                  </v-btn>
+                </div>
+                <div class="pa-2">
+                  <v-btn small @click="edit()">
+                    <v-icon color="green">visibility</v-icon>
+                  </v-btn>
+                </div>
+                <div class="pa-2">
+                  <v-btn small @click="showColorPicker()">
+                    <v-icon color="pink">palette</v-icon>
+                  </v-btn>
+                </div>
+              </v-layout>
+            </v-card-actions>
+          </v-fade-transition>
+        </v-card>
+      </v-hover>
+    </v-flex>
+  </v-scale-transition>
 </template>
 
 <script>
@@ -38,7 +58,7 @@ import { store } from "../store/store.js";
 export default {
   name: "Pass",
   props: {
-    passId: String,
+    passId: Number,
     bgColor: String,
     service: String,
     username: String,
@@ -53,9 +73,14 @@ export default {
     cardClick() {
       this.showActions = !this.showActions;
     },
+    showColorPicker() {
+      store.showColorPickerDialog(this.passId);
+    },
     del() {
-      store.deletePass(this.passId);
-      this.showActions = false;
+      if (confirm("Are you sure you want to delete this password?")) {
+        store.deletePass(this.passId);
+        this.showActions = false;
+      }
     }
   }
 };

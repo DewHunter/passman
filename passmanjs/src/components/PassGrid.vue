@@ -2,14 +2,14 @@
   <v-container fluid grid-list-xl>
     <v-layout row wrap align-baseline>
       <Pass
-        v-for="(pass, idx) in storeState.passes"
-        :key="idx"
-        :passId="idx"
+        v-for="(pass) in storeState.passes"
+        :key="pass.idx"
+        :passId="pass.idx"
         :bgColor="pass.bgColor"
         :service="pass.service"
         :username="pass.username"
         :password="pass.password"
-      ></Pass>
+      />
     </v-layout>
   </v-container>
 </template>

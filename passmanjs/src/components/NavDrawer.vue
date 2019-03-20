@@ -19,7 +19,7 @@
 
       <v-list-tile v-for="item in items" :key="item.title" @click="item.action()" ripple>
         <v-list-tile-action>
-          <v-icon large>{{ item.icon }}</v-icon>
+          <v-icon large :color="item.iconColor">{{ item.icon }}</v-icon>
         </v-list-tile-action>
 
         <v-list-tile-content>
@@ -27,8 +27,11 @@
         </v-list-tile-content>
       </v-list-tile>
 
-      <v-divider light></v-divider>
+      <v-divider></v-divider>
 
+      <div class="pa-2">
+        <v-btn block outline flat color="info" class="pa-1">Decrypt</v-btn>
+      </div>
       <!-- <v-list-tile class="pt-3">
         <v-list-tile-content>
           <SecureKeyDialog/>
@@ -53,9 +56,15 @@ export default {
           icon: "add",
           action() {
             store.showNewPassDialog();
-          }
+          },
+          iconColor: "info"
         },
-        { title: "save to cloud!", icon: "backup", action: function() {} }
+        {
+          title: "save to cloud!",
+          icon: "backup",
+          action: function() {},
+          iconColor: "green"
+        }
       ]
     };
   }

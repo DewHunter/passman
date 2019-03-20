@@ -8,6 +8,7 @@
     </v-content>
 
     <AddPassDialog/>
+    <ColorPickerDialog/>
     <Footer/>
   </v-app>
 </template>
@@ -16,7 +17,8 @@
 import Toolbar from "./components/Toolbar";
 import NavDrawer from "./components/NavDrawer";
 import PassGrid from "./components/PassGrid";
-import AddPassDialog from "./components/AddPassDialog";
+import AddPassDialog from "./components/dialogs/AddPassDialog";
+import ColorPickerDialog from "./components/dialogs/ColorPickerDialog";
 import Footer from "./components/Footer";
 
 export default {
@@ -26,6 +28,7 @@ export default {
     NavDrawer,
     PassGrid,
     AddPassDialog,
+    ColorPickerDialog,
     Footer
   }
 };
