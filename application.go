@@ -25,9 +25,7 @@ func main() {
 func Routes(configuration *config.Config) *chi.Mux {
 	router := chi.NewRouter()
 
-	router.Route("/api", func(r chi.Router) {
-		r.Mount("/", passmango.Routes(configuration))
-	})
+	router.Mount("/api", passmango.Routes(configuration))
 
 	// Comment out to run API only server
 	FileServer(router, "/", http.Dir(configuration.Constants.PUB_DIR))

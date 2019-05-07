@@ -8,7 +8,6 @@ import awsmobile from "./aws-exports";
 Amplify.configure(awsmobile);
 
 Vue.use(AmplifyPlugin, AmplifyModules);
-Vue.config.productionTip = false;
 
 new Vue({
   render: h => h(App)

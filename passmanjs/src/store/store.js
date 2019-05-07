@@ -6,7 +6,8 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
-let idx = 0;
+import constants from "../constants.js";
+
 /**
  * Structure of a Pass obj in passes:
  {
@@ -15,10 +16,9 @@ let idx = 0;
     username: "Rand Doode",
 
     bgColor: "bg-blue-grey",
-    idx: 0
+    id: "sdfsdfsdf"
   }
  */
-
 export const store = {
   state: {
     passes: [],
@@ -28,14 +28,28 @@ export const store = {
     drawer: null
   },
   addPass(passData) {
-    passData.idx = idx++;
-    this.state.passes.push(passData);
-    this.state.showNewPassDialog = false;
+    fetch(constants.endpoint + "/api/getNewId", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Auth-Token": "123456"
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          passData.id = response.id;
+          this.state.passes.push(passData);
+          this.state.showNewPassDialog = false;
+        } else {
+          alert("Could not contact Server to create Pass :(");
+        }
+      })
+      .catch(error => alert(error));
   },
   deletePass(id) {
     let i;
     for (i = 0; i < this.state.passes.length; i++) {
-      if (this.state.passes[i].idx == id) {
+      if (this.state.passes[i].id == id) {
         break;
       }
     }
@@ -47,8 +61,8 @@ export const store = {
   closeNewPassDialog() {
     this.state.showNewPassDialog = false;
   },
-  showColorPickerDialog(idx) {
-    this.state.showingColorPickerFor = idx;
+  showColorPickerDialog(passId) {
+    this.state.showingColorPickerFor = passId;
     this.state.showColorPickerDialog = true;
   },
   closeColorPickerDialog() {
@@ -57,7 +71,7 @@ export const store = {
   },
   chooseColor(color) {
     for (let i = 0; i < this.state.passes.length; i++) {
-      if (this.state.passes[i].idx == this.state.showingColorPickerFor) {
+      if (this.state.passes[i].id == this.state.showingColorPickerFor) {
         this.state.passes[i].bgColor = color;
         break;
       }

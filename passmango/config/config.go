@@ -7,8 +7,9 @@ import (
 )
 
 type Constants struct {
-	PORT    string
-	PUB_DIR string
+	PORT      string
+	PUB_DIR   string
+	TableName string
 }
 
 type Config struct {
@@ -18,7 +19,11 @@ type Config struct {
 
 func New() (*Config, error) {
 	config := Config{}
-	config.Constants = Constants{"5000", "passmanjs/dist"}
+	config.Constants = Constants{
+		PORT:      "5000",
+		PUB_DIR:   "passmanjs/dist",
+		TableName: "Guacamole",
+	}
 
 	awsConfig := aws.Config{
 		Region:   aws.String("us-west-2"),

@@ -30,19 +30,25 @@
       <v-divider></v-divider>
 
       <div class="pa-2">
-        <v-btn block outline flat color="info" class="pa-1">Decrypt</v-btn>
+        <amplify-sign-out v-bind:signOutConfig="signOutConfig"></amplify-sign-out>
       </div>
-      <!-- <v-list-tile class="pt-3">
-        <v-list-tile-content>
-          <SecureKeyDialog/>
-        </v-list-tile-content>
-      </v-list-tile>-->
+      <div class="pa-2">
+        <v-btn block @click="showStuff">show</v-btn>
+      </div>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
 import { store } from "../store/store.js";
+import { AmplifyEventBus } from "aws-amplify-vue";
+import { Auth } from "aws-amplify";
+
+AmplifyEventBus.$on("authState", info => {
+  if (info == "signedOut") {
+    window.location.href = "http://google.com";
+  }
+});
 
 export default {
   name: "NavDrawer",
@@ -65,8 +71,20 @@ export default {
           action: function() {},
           iconColor: "green"
         }
-      ]
+      ],
+      signOutConfig: {
+        msg: null,
+        signOutButton: "I'm Out"
+      }
     };
+  },
+  methods: {
+    showStuff: function() {
+      Auth.currentUserInfo().then(user => {
+        alert(JSON.stringify(user));
+        this.name = user.username;
+      });
+    }
   }
 };
 </script>
